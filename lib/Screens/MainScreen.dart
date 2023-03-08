@@ -53,7 +53,7 @@ class mainScreen  extends StatelessWidget {
                 child: charts.BarChart(
                   data,
                   animate: true,
-                  domainAxis: charts.OrdinalAxisSpec(
+                  domainAxis: const charts.OrdinalAxisSpec(
                     renderSpec: charts.SmallTickRendererSpec(
                       labelStyle: charts.TextStyleSpec(
                         fontSize: 14,
@@ -63,10 +63,10 @@ class mainScreen  extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 32.0),
+              const SizedBox(height: 32.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   SalesCard(
                     label: 'Today',
                     sales: 15000,
