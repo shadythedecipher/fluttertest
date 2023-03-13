@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -23,13 +24,34 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      textAlign: TextAlign.center,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
-        contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
         border: InputBorder.none,
         suffixIcon: icon,
+        filled: true,
+        fillColor: Colors.grey[200],
+        contentPadding: const EdgeInsets.all(20.0),
+        focusedBorder: OutlineInputBorder(
+          borderSide:
+          const BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide:
+          const BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+              color: Color.fromARGB(0, 36, 10, 10)),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide:
+          const BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
       ),
       validator: (val) {
         if (val == null || val.isEmpty) {

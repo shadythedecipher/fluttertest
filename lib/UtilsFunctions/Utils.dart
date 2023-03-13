@@ -85,6 +85,30 @@ void showSnackBarForSuccess(BuildContext context, String text) {
   // ),
 }
 
+void showSnackBarForError1(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error, color: Colors.red,),
+          const SizedBox(width: 20,),
+          Text(text, style:GlobalVariables.myTheme2.textTheme.displayLarge,
+              textAlign: TextAlign.center),
+        ],
+      ),
+
+      backgroundColor: Colors.black,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.all(50),
+      shape: const StadiumBorder(),
+      duration: const Duration(milliseconds: 2050),
+    ),
+
+  );
+
+}
+
 // void showSnackBar(ScaffoldMessengerState scaffoldMessengerState, String text) {
 //   scaffoldMessengerState.showSnackBar(
 //     SnackBar(

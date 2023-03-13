@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../main.dart';
 
 
 class mainScreen  extends StatelessWidget {
@@ -30,7 +35,10 @@ class mainScreen  extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back),
+        leading: IconButton(icon: const Icon(Icons.arrow_back),onPressed: (){
+          Get.off(const MyHomePage());
+
+        },),
         title: Text('Admin Dashboard'),
         backgroundColor: callToAction,
       ),

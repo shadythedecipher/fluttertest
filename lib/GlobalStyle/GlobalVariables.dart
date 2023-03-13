@@ -9,6 +9,7 @@ class GlobalVariables{
   static const Color buttonColor = Color(0xfffebf00);
   static const Color retryAction = Color(0xff0c35ff);
   static const Color error = Color(0xedfd0303);
+  static const Color otp = Color(0xffcdced1);
 
   static ThemeData myTheme = ThemeData(
       useMaterial3: true,
@@ -36,5 +37,32 @@ class GlobalVariables{
           )
       )
   );
-
+  static ThemeData myTheme2 = ThemeData(
+      useMaterial3: true,
+      textTheme: TextTheme(
+          displayLarge: GoogleFonts.poppins(
+            fontSize: 16,
+            color: Colors.red
+          ),
+          displayMedium: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+          displaySmall: GoogleFonts.poppins(
+            fontSize: 14,
+          ),
+          bodyLarge: GoogleFonts.poppins(
+            fontSize: 14,
+            color: buttonColor,
+              fontWeight: FontWeight.bold,
+          ),
+          bodyMedium: GoogleFonts.poppins(
+            fontSize: 28,
+            color: blackColor
+          ),
+          bodySmall: GoogleFonts.poppins(
+            fontSize: 10,
+          )
+      )
+  );
 }
