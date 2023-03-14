@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:extended_phone_number_input/consts/enums.dart';
 import 'package:extended_phone_number_input/phone_number_controller.dart';
 import 'package:extended_phone_number_input/phone_number_input.dart';
+import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -31,16 +32,19 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController fullNameController = TextEditingController();
-
+  TextEditingController phoneNumber = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
   bool isLoading = false;
   var numberOfuser = '';
+  final _formKey1 = GlobalKey<FormState>();
+  String _phoneNumber = '';
   bool passwordVisibility = false;
   List<String> includedCountries = ['TZ'];
   final passwordRegex =
       RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
   final _formKey = GlobalKey<FormState>();
+
   Widget build(BuildContext context) {
     final TextEditingController phoneNumber = TextEditingController();
     String initialCountry = 'TZ';
@@ -94,6 +98,65 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       height: deviceSize.height * 0.009,
                     ),
                     SizedBox(height: deviceSize.height * 0.009),
+                    Form(
+                      key: _formKey1,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: TextFormField(
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(12),
+                        ],
+                        decoration: InputDecoration(
+                          labelText: 'Phone number',
+                          hintText: "Enter phone number",
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          contentPadding: const EdgeInsets.all(20.0),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(0, 36, 10, 10)),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          final tanzanianRegex = RegExp(r'^255\d{9}$');
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a phone number';
+                          } else if (!tanzanianRegex.hasMatch(value)) {
+                            if (value.length > 3 &&
+                                value.length < 12 &&
+                                !tanzanianRegex.hasMatch(value)) {
+                              return 'Phone number too short';
+                            }
+                            return 'Please enter a valid Tanzanian phone number 255';
+                          }
+                          return null;
+                        },
+                        maxLines: 1,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        onFieldSubmitted: (value) {
+                          // do something when the "done" button is pressed
+                          // you can leave this method empty if you don't want to do anything
+                        },
+                      ),
+                    ),
                     // TextFormField(
                     //   controller: phoneNumber,
                     //   decoration: InputDecoration(
@@ -152,42 +215,40 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     //       errorText: 'Please check you number',
                     //     ),
 
-                    InternationalPhoneNumberInput(
-                      onInputChanged: (PhoneNumber number) {
-                        if (number.phoneNumber!.length >= 13) {
-                          setState(() {
-                            numberOfuser = number.phoneNumber!;
-                          });
-                        } else {}
-                      },
-                      onInputValidated: (bool value) {
-                        print(value);
-                      },
-                      // selectorConfig: const SelectorConfig(
-                      //   selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                      // ),
-                      ignoreBlank: false,
-                      autoValidateMode: AutovalidateMode.disabled,
-                      selectorTextStyle: TextStyle(color: Colors.black),
-                      initialValue: number,
-                      countries: ['TZ'],
-                      maxLength: 9,
-                      hintText: '743625473',
-                      textFieldController: phoneNumber,
-                      formatInput: true,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          signed: true, decimal: true),
-                      inputBorder: const OutlineInputBorder(),
-                      onSaved: (PhoneNumber number) {
-                        print('On Saved: $number');
-                        setState(() {
-                          numberOfuser = number.phoneNumber!;
-                          print("---------============" + numberOfuser);
-                        });
-                        print("---------============@@@@@@@@@@@@@@@@@@@@@@" +
-                            numberOfuser);
-                      },
-                    ),
+                    // InternationalPhoneNumberInput(
+                    //   onInputChanged: (PhoneNumber number) {
+                    //     if (number.phoneNumber!.length >= 13) {
+                    //       setState(() {
+                    //         numberOfuser = number.phoneNumber!;
+                    //       });
+                    //     } else {}
+                    //   },
+                    //   onInputValidated: (bool value) {
+                    //     print(value);
+                    //   },
+                    //   // selectorConfig: const SelectorConfig(
+                    //   //   selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    //   // ),
+                    //   ignoreBlank: false,
+                    //   autoValidateMode: AutovalidateMode.disabled,
+                    //   selectorTextStyle: TextStyle(color: Colors.black),
+                    //   initialValue: number,
+                    //   countries: ['TZ'],
+                    //   maxLength: 9,
+                    //   hintText: '743625473',
+                    //   textFieldController: phoneNumber,
+                    //   // formatInput: true,
+                    //   keyboardType: TextInputType.number,
+                    //   // inputBorder: const OutlineInputBorder(),
+                    //   onSaved: (PhoneNumber number) {
+                    //     print('On Saved: $number');
+                    //     setState(() {
+                    //       numberOfuser = number.phoneNumber!;
+                    //       print("---------============$numberOfuser");
+                    //     });
+                    //     print("---------============@@@@@@@@@@@@@@@@@@@@@@$numberOfuser");
+                    //   },
+                    // ),
                     SizedBox(
                       height: deviceSize.height * 0.009,
                     ),
@@ -354,57 +415,61 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     CustomButton(
                       () async {
-                        String regx =
-                            "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@%^&*-]).{8,}";
                         final bool isConnected =
                             await InternetConnectionChecker().hasConnection;
                         if (isConnected) {
-                          if (numberOfuser.length >= 13) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          var trimed = numberOfuser.substring(1);
+                          print("099999999999999999" + trimed);
+                          String url =
+                              "https://kikundidevbackend.azurewebsites.net/api/user/create";
+                          final Map<String, String> headers = {
+                            "Content-Type": "application/json"
+                          };
+                          // final frPhone0 = PhoneNumber.parse(phoneNumber.text);
+                          final Map<String, String> body = {
+                            "firstName": fullNameController.text,
+                            "email": email.text,
+                            "phone": trimed,
+                            "password": controllerPassword.text
+                          };
+                          final String jsonBody = json.encode(body);
+                          try {
+                            final http.Response response = await http.post(
+                                Uri.parse(url),
+                                headers: headers,
+                                body: jsonBody);
                             setState(() {
-                              isLoading = true;
+                              isLoading = false;
                             });
-                            var trimed = numberOfuser.substring(1);
-                            print("099999999999999999" + trimed);
-                            String url =
-                                "https://kikundidevbackend.azurewebsites.net/api/user/create";
-                            final Map<String, String> headers = {
-                              "Content-Type": "application/json"
-                            };
-                            // final frPhone0 = PhoneNumber.parse(phoneNumber.text);
-                            final Map<String, String> body = {
-                              "firstName": fullNameController.text,
-                              "email": email.text,
-                              "phone": trimed,
-                              "password": controllerPassword.text
-                            };
-                            final String jsonBody = json.encode(body);
-                            try {
-                              final http.Response response = await http.post(
-                                  Uri.parse(url),
-                                  headers: headers,
-                                  body: jsonBody);
-                              setState(() {
-                                isLoading = false;
-                              });
-                              print(response.body);
-                              if (response.statusCode == 201) {
-                                final Map<String, dynamic> data =
-                                    json.decode(response.body);
-                                showSnackBarForSuccess(
-                                    context, data['successMessage']);
-                                // Get.off(OtpVerificationScreen(email: email.text));
-                              } else {
-                                final ress = jsonDecode(response.body);
-                                print("------------------------" + ress);
-                                showSnackBar(context, response.body);
-                              }
-                            } catch (e) {
-                              print(e);
+                            print(response.body);
+                            if (response.statusCode == 200) {
+                              final Map<String, dynamic> data =
+                                  json.decode(response.body);
+                              showSnackBarForSuccess(
+                                  context, data['successMessage']);
                               // Get.off(OtpVerificationScreen(email: email.text));
+                            } else {
+                              final Map<String, dynamic> data =
+                                  json.decode(response.body);
+                              print(data);
+                              if (data['errors'].toString().length > 30) {
+                                print(data['errors']);
+                                // ignore: use_build_context_synchronously
+                                showSnackBar(context,
+                                    "please enter an email in the given field");
+                              } else {
+                                // ignore: use_build_context_synchronously
+                                showSnackBar(context, data['errors']);
+                              }
                             }
-                          } else {
-                            showSnackBarForSuccess(context, "Wrong number");
+                          } catch (e) {
+                            print(e);
+                            // Get.off(OtpVerificationScreen(email: email.text));
                           }
+
                           //
                           // // validation
                         } else {
@@ -561,49 +626,160 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     //       errorText: 'Please check you number',
                     //     ),
 
-                    InternationalPhoneNumberInput(
-                      onInputChanged: (PhoneNumber number) {
-                        if (number.phoneNumber!.length >= 13) {
-                          setState(() {
-                            numberOfuser = number.phoneNumber!;
-                          });
-                        } else {}
-                      },
-                      onInputValidated: (bool value) {
-                        print(value);
-                      },
-                      // selectorConfig: const SelectorConfig(
-                      //   selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                      // ),
-                      ignoreBlank: false,
-                      autoValidateMode: AutovalidateMode.disabled,
-                      selectorTextStyle: TextStyle(color: Colors.black),
-                      initialValue: number,
-                      countries: ['TZ'],
-                      maxLength: 9,
-                      hintText: '743625473',
-                      textFieldController: phoneNumber,
-                      formatInput: true,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          signed: true, decimal: true),
-                      inputBorder: const OutlineInputBorder(),
-                      onSaved: (PhoneNumber number) {
-                        print('On Saved: $number');
-                        setState(() {
-                          numberOfuser = number.phoneNumber!;
-                          print("---------============" + numberOfuser);
-                        });
-                        print("---------============@@@@@@@@@@@@@@@@@@@@@@" +
-                            numberOfuser);
-                      },
+                    // InternationalPhoneNumberInput(
+                    //   onInputChanged: (PhoneNumber number) {
+                    //     print(number);
+                    //     if (number.phoneNumber!.length >= 13) {
+                    //       setState(() {
+                    //         print("+++++++++++++++++++++++++++${number.phoneNumber!}");
+                    //         numberOfuser = number.phoneNumber!;
+                    //       });
+                    //     } else {}
+                    //   },
+                    //   onInputValidated: (bool value) {
+                    //     print(value);
+                    //   },
+                    //   // selectorConfig: const SelectorConfig(
+                    //   //   selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    //   // ),
+                    //   ignoreBlank: false,
+                    //   autoValidateMode: AutovalidateMode.disabled,
+                    //   selectorTextStyle: TextStyle(color: Colors.black),
+                    //   initialValue: number,
+                    //   countries: ['TZ'],
+                    //   maxLength: 9,
+                    //   hintText: '743625473',
+                    //   textFieldController: phoneNumber,
+                    //   formatInput: true,
+                    //   keyboardType: const TextInputType.numberWithOptions(
+                    //       signed: true, decimal: true),
+                    //   // inputBorder: const OutlineInputBorder(),
+                    //   onSaved: (PhoneNumber number) {
+                    //     print('On Saved: $number');
+                    //     // setState(() {
+                    //     //   numberOfuser = number.phoneNumber!;
+                    //     //   print("---------============" + numberOfuser);
+                    //     // });
+                    //     print("---------=========s===@@@@@@@@@@@@@@@@@@@@@@" +
+                    //         numberOfuser);
+                    //   },
+                    // ),
+
+                    // Form(
+                    //   key: _formKey1,
+                    //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //   child: TextFormField(
+                    //     keyboardType: TextInputType.phone,
+                    //     controller: phoneNumber ,
+                    //     inputFormatters: [
+                    //       FilteringTextInputFormatter.digitsOnly,
+                    //       LengthLimitingTextInputFormatter(12),
+                    //     ],
+                    //     decoration: InputDecoration(
+                    //       labelText: 'Phone Number',
+                    //       hintText: 'Enter a Tanzanian phone number',
+                    //       filled: true,
+                    //       fillColor: Colors.grey[200],
+                    //       contentPadding: const EdgeInsets.all(20.0),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderSide:
+                    //         const BorderSide(color: Colors.transparent),
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //       ),
+                    //       enabledBorder: OutlineInputBorder(
+                    //         borderSide:
+                    //         const BorderSide(color: Colors.transparent),
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //       ),
+                    //       focusedErrorBorder: OutlineInputBorder(
+                    //         borderSide: const BorderSide(
+                    //             color: Color.fromARGB(0, 36, 10, 10)),
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //       ),
+                    //       errorBorder: OutlineInputBorder(
+                    //         borderSide:
+                    //         const BorderSide(color: Colors.transparent),
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //       ),
+                    //     ),
+                    //     validator: (value) {
+                    //       final tanzanianRegex = RegExp(r'^255\d{9}$');
+                    //       if (value == null || value.isEmpty) {
+                    //         return 'Please enter a phone number';
+                    //       }else if(!tanzanianRegex.hasMatch(value)){
+                    //         if (value.length>3&&value.length < 12 &&!tanzanianRegex.hasMatch(value)) {
+                    //           return 'Phone number too short';
+                    //         }
+                    //         return 'Please enter a valid Tanzanian phone number 255';
+                    //       }
+                    //
+                    //       return null;
+                    //     },
+                    //   ),
+                    // ),
+
+                    Form(
+                      key: _formKey1,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: TextFormField(
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(12),
+                        ],
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          labelText: 'Phone number',
+                          hintText: "Enter phone number",
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          contentPadding: const EdgeInsets.all(20.0),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(0, 36, 10, 10)),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        validator: (value) {
+                          final tanzanianRegex = RegExp(r'^255\d{9}$');
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a phone number';
+                          } else if (!tanzanianRegex.hasMatch(value)) {
+                            if (value.length > 3 &&
+                                value.length < 12 &&
+                                !tanzanianRegex.hasMatch(value)) {
+                              return 'Phone number too short';
+                            }
+                            return 'Please enter a valid Tanzanian phone number 255';
+                          }
+
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _phoneNumber = value!;
+                        },
+                        onFieldSubmitted: (value) {
+                          _phoneNumber = value;
+                        },
+                        maxLines: 1,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                      ),
                     ),
-                    SizedBox(
-                      height: deviceSize.height * 0.009,
-                    ),
-                    SizedBox(
-                      height: deviceSize.height * 0.009,
-                    ),
-                    SizedBox(height: deviceSize.height * 0.009),
                     // CustomTextField(
                     //   controller: controllerPassword,
                     //   hintText: "Enter Password",
@@ -623,6 +799,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     //           ? Icons.visibility
                     //           : Icons.visibility_off)),
                     // ),
+                    SizedBox(
+                      height: deviceSize.height * 0.009,
+                    ),
+                    SizedBox(
+                      height: deviceSize.height * 0.009,
+                    ),
+                    SizedBox(height: deviceSize.height * 0.009),
                     Form(
                       key: _formKey,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -763,17 +946,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     CustomButton(
                       () async {
-                        String regx =
-                            "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@%^&*-]).{8,}";
+                        if (_formKey1.currentState!.validate()) {
+                          // Do something with the phone number
+                          _formKey1.currentState!.save();
+                          print('Phone number: $_phoneNumber');
+                        }
                         final bool isConnected =
                             await InternetConnectionChecker().hasConnection;
                         if (isConnected) {
-                          if (numberOfuser.length >= 13) {
+                          if (_phoneNumber.length >= 12) {
                             setState(() {
                               isLoading = true;
                             });
-                            var trimed = numberOfuser.substring(1);
-                            print("099999999999999999" + trimed);
                             String url =
                                 "https://kikundidevbackend.azurewebsites.net/api/user/create";
                             final Map<String, String> headers = {
@@ -783,7 +967,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             final Map<String, String> body = {
                               "firstName": fullNameController.text,
                               "email": email.text,
-                              "phone": trimed,
+                              "phone": _phoneNumber,
                               "password": controllerPassword.text
                             };
                             final String jsonBody = json.encode(body);
@@ -796,28 +980,42 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 isLoading = false;
                               });
                               print(response.body);
-                              if (response.statusCode == 201) {
+                              if (response.statusCode == 200) {
                                 final Map<String, dynamic> data =
                                     json.decode(response.body);
                                 showSnackBarForSuccess(
                                     context, data['successMessage']);
-                                // Get.off(OtpVerificationScreen(email: email.text));
+                                // showSnackBarForSuccess(
+                                //     context, data['responseObject']['email']);
+                                Get.off(OtpVerificationScreen(
+                                    email: data['responseObject']['email']));
                               } else {
-                                final ress = jsonDecode(response.body);
-                                print("------------------------" + ress);
-                                showSnackBar(context, response.body);
+                                final Map<String, dynamic> data =
+                                    json.decode(response.body);
+                                print(data);
+                                if (data['errors'].toString().length > 30) {
+                                  print(data['errors']);
+                                  // ignore: use_build_context_synchronously
+                                  showSnackBar(context,
+                                      "please enter an email in the given field");
+                                } else {
+                                  // ignore: use_build_context_synchronously
+                                  showSnackBar(context, data['errors']);
+                                }
                               }
                             } catch (e) {
                               print(e);
                               // Get.off(OtpVerificationScreen(email: email.text));
                             }
+                            //
+                            // // validation
                           } else {
-                            showSnackBarForSuccess(context, "Wrong number");
+                            // ignore: use_build_context_synchronously
+                            showSnackBarForError1(context, "No internet");
                           }
-                          //
-                          // // validation
                         } else {
-                          showSnackBarForError1(context, "No internet");
+                          // ignore: use_build_context_synchronously
+                          showSnackBarForError1(context, "Wrong Tanzanian Number length");
                         }
                       },
                       widgetChild: Row(
