@@ -6,6 +6,7 @@ import 'package:fluttertest/GlobalStyle/GlobalVariables.dart';
 import 'package:fluttertest/Models/APIresponse/LoginAPIresponse.dart';
 import 'package:fluttertest/Models/Dto/LoginDto.dart';
 import 'package:fluttertest/Screens/RegisterView.dart';
+import 'package:fluttertest/Screens/ResendOtp.dart';
 import 'package:fluttertest/Screens/ResertPassword.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -54,8 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
-
-    print(deviceSize);
     return SafeArea(
       child: Scaffold(
         body: deviceSize.height > 750
@@ -159,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   onTap: () {
-                                    Get.to(const ForgotPassword());
+                                    Get.to(const ResetPassword());
                                   },
                                 ),
                               ),

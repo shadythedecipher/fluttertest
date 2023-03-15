@@ -105,6 +105,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(12),
                         ],
+                        keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           labelText: 'Phone number',
                           hintText: "Enter phone number",
@@ -114,12 +115,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           contentPadding: const EdgeInsets.all(20.0),
                           focusedBorder: OutlineInputBorder(
                             borderSide:
-                                const BorderSide(color: Colors.transparent),
+                            const BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                                const BorderSide(color: Colors.transparent),
+                            const BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
@@ -129,11 +130,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                           errorBorder: OutlineInputBorder(
                             borderSide:
-                                const BorderSide(color: Colors.transparent),
+                            const BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
-                        keyboardType: TextInputType.phone,
                         validator: (value) {
                           final tanzanianRegex = RegExp(r'^255\d{9}$');
                           if (value == null || value.isEmpty) {
@@ -146,15 +146,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             }
                             return 'Please enter a valid Tanzanian phone number 255';
                           }
+
                           return null;
+                        },
+                        onSaved: (value) {
+                          _phoneNumber = value!;
+                        },
+                        onFieldSubmitted: (value) {
+                          _phoneNumber = value;
                         },
                         maxLines: 1,
                         enableSuggestions: false,
                         autocorrect: false,
-                        onFieldSubmitted: (value) {
-                          // do something when the "done" button is pressed
-                          // you can leave this method empty if you don't want to do anything
-                        },
                       ),
                     ),
                     // TextFormField(
@@ -372,7 +375,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               GlobalVariables.myTheme2.textTheme.displaySmall,
                         ),
                         Text(
-                          " Terms & ",
+                          " Terms &",
                           style:
                               GlobalVariables.myTheme2.textTheme.displayMedium,
                         ),
@@ -415,64 +418,75 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     CustomButton(
                       () async {
+                        if (_formKey1.currentState!.validate()) {
+                          // Do something with the phone number
+                          _formKey1.currentState!.save();
+                          print('Phone number: $_phoneNumber');
+                        }
                         final bool isConnected =
-                            await InternetConnectionChecker().hasConnection;
+                        await InternetConnectionChecker().hasConnection;
                         if (isConnected) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          var trimed = numberOfuser.substring(1);
-                          print("099999999999999999" + trimed);
-                          String url =
-                              "https://kikundidevbackend.azurewebsites.net/api/user/create";
-                          final Map<String, String> headers = {
-                            "Content-Type": "application/json"
-                          };
-                          // final frPhone0 = PhoneNumber.parse(phoneNumber.text);
-                          final Map<String, String> body = {
-                            "firstName": fullNameController.text,
-                            "email": email.text,
-                            "phone": trimed,
-                            "password": controllerPassword.text
-                          };
-                          final String jsonBody = json.encode(body);
-                          try {
-                            final http.Response response = await http.post(
-                                Uri.parse(url),
-                                headers: headers,
-                                body: jsonBody);
+                          if (_phoneNumber.length >= 12) {
                             setState(() {
-                              isLoading = false;
+                              isLoading = true;
                             });
-                            print(response.body);
-                            if (response.statusCode == 200) {
-                              final Map<String, dynamic> data =
-                                  json.decode(response.body);
-                              showSnackBarForSuccess(
-                                  context, data['successMessage']);
-                              // Get.off(OtpVerificationScreen(email: email.text));
-                            } else {
-                              final Map<String, dynamic> data =
-                                  json.decode(response.body);
-                              print(data);
-                              if (data['errors'].toString().length > 30) {
-                                print(data['errors']);
-                                // ignore: use_build_context_synchronously
-                                showSnackBar(context,
-                                    "please enter an email in the given field");
+                            String url =
+                                "https://kikundidevbackend.azurewebsites.net/api/user/create";
+                            final Map<String, String> headers = {
+                              "Content-Type": "application/json"
+                            };
+                            // final frPhone0 = PhoneNumber.parse(phoneNumber.text);
+                            final Map<String, String> body = {
+                              "firstName": fullNameController.text,
+                              "email": email.text,
+                              "phone": _phoneNumber,
+                              "password": controllerPassword.text
+                            };
+                            final String jsonBody = json.encode(body);
+                            try {
+                              final http.Response response = await http.post(
+                                  Uri.parse(url),
+                                  headers: headers,
+                                  body: jsonBody);
+                              setState(() {
+                                isLoading = false;
+                              });
+                              print(response.body);
+                              if (response.statusCode == 200) {
+                                final Map<String, dynamic> data =
+                                json.decode(response.body);
+                                showSnackBarForSuccess(
+                                    context, data['successMessage']);
+                                // showSnackBarForSuccess(
+                                //     context, data['responseObject']['email']);
+                                Get.off(OtpVerificationScreen(
+                                    email: data['responseObject']['email']));
                               } else {
-                                // ignore: use_build_context_synchronously
-                                showSnackBar(context, data['errors']);
+                                final Map<String, dynamic> data =
+                                json.decode(response.body);
+                                print(data);
+                                if (data['errors'].toString().length > 30) {
+                                  print(data['errors']);
+                                  // ignore: use_build_context_synchronously
+                                  showSnackBar(context,
+                                      "please enter an email in the given field");
+                                } else {
+                                  // ignore: use_build_context_synchronously
+                                  showSnackBar(context, data['errors']);
+                                }
                               }
+                            } catch (e) {
+                              print(e);
+                              // Get.off(OtpVerificationScreen(email: email.text));
                             }
-                          } catch (e) {
-                            print(e);
-                            // Get.off(OtpVerificationScreen(email: email.text));
+                            //
+                            // // validation
+                          } else {
+                            // ignore: use_build_context_synchronously
+                            showSnackBarForError1(context, "No internet");
                           }
-
-                          //
-                          // // validation
                         } else {
+                          // ignore: use_build_context_synchronously
                           showSnackBarForError1(context, "No internet");
                         }
                       },
@@ -993,7 +1007,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 final Map<String, dynamic> data =
                                     json.decode(response.body);
                                 print(data);
-                                if (data['errors'].toString().length > 30) {
+                                if (data['errors'].toString().length > 200) {
                                   print(data['errors']);
                                   // ignore: use_build_context_synchronously
                                   showSnackBar(context,
