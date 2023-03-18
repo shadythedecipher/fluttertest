@@ -37,9 +37,17 @@ void showSnackBarForError(BuildContext context, String text) {
       content: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Icon(Icons.error_outline_outlined, color: Colors.red,),
-          Text(text, style: const TextStyle(color: Colors.white),
-              textAlign: TextAlign.center),
+          Expanded(
+            child: Row(
+
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline_outlined, color: Colors.red,),
+                Text(text, style: const TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center),
+              ],
+            ),
+          ),
         ],
       ),
       backgroundColor: GlobalVariables.error,
@@ -57,9 +65,16 @@ void showSnackBarForSuccess(BuildContext context, String text) {
       content: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Icon(Icons.task_alt, color: GlobalVariables.buttonColor,),
-          Text(text, style: const TextStyle(color: GlobalVariables.buttonColor),
-              textAlign: TextAlign.center),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.task_alt, color: GlobalVariables.buttonColor,),
+                Text(text, style: const TextStyle(color: GlobalVariables.buttonColor),
+                    textAlign: TextAlign.center),
+              ],
+            ),
+          ),
         ],
       ),
       backgroundColor: GlobalVariables.blackColor,
@@ -70,31 +85,26 @@ void showSnackBarForSuccess(BuildContext context, String text) {
     ),
 
   );
-  // OTPTextField(
-  //   length: 5,
-  //   width: MediaQuery.of(context).size.width,
-  //   fieldWidth: 80,
-  //   style: TextStyle(
-  //       fontSize: 17
-  //   ),
-  //   textFieldAlignment: MainAxisAlignment.spaceAround,
-  //   fieldStyle: FieldStyle.underline,
-  //   onCompleted: (pin) {
-  //     print("Completed: " + pin);
-  //   },
-  // ),
+
 }
 
 void showSnackBarForError1(BuildContext context, String text) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Icon(Icons.error, color: Colors.red,),
-          const SizedBox(width: 20,),
-          Text(text, style:GlobalVariables.myTheme2.textTheme.displayLarge,
-              textAlign: TextAlign.center),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error, color: Colors.red,),
+                const SizedBox(width: 20,),
+                Text(text, style:GlobalVariables.myTheme2.textTheme.displayLarge,
+                    textAlign: TextAlign.center),
+              ],
+            ),
+          ),
         ],
       ),
 

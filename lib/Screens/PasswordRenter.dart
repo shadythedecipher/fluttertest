@@ -46,13 +46,14 @@ class _PasswordRenterState extends State<PasswordRenter> {
             SizedBox(height: deviceSize.height*0.009,),
             SizedBox(height: deviceSize.height*0.009,),
             SizedBox(height: deviceSize.height*0.009),
-            Text("Enter your password and Otp",style: GlobalVariables.myTheme2.textTheme.bodyMedium,),
+            Text("Enter your new password and Otp",style: GlobalVariables.myTheme2.textTheme.bodyMedium,),
             SizedBox(height: deviceSize.height*0.009,),
             SizedBox(height: deviceSize.height*0.009,),
             SizedBox(height: deviceSize.height*0.009),
             CustomTextField(
               controller: controllerPassword1,
               hintText: " Enter otp received ",
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               val: false,
               labelText: 'Otp',
             ),
@@ -129,7 +130,16 @@ class _PasswordRenterState extends State<PasswordRenter> {
                 final bool isConnected =
                 await InternetConnectionChecker().hasConnection;
                 if (isConnected) {
-
+                   if(controllerPassword1.text.isEmpty){
+                     // ignore: use_build_context_synchronously
+                     showSnackBarForSuccess(context,"Otp is empty");
+                     return;
+                   }
+                   if(controllerPassword.text.isEmpty){
+                     // ignore: use_build_context_synchronously
+                     showSnackBarForSuccess(context,"Password is empty");
+                     return;
+                   }
                   // validation
                   setState(() {
                     isLoading = true;
@@ -148,9 +158,14 @@ class _PasswordRenterState extends State<PasswordRenter> {
                     setState(() {
                       isLoading = false;
                     });
+                    print(response.body);
                     if (response.statusCode == 200) {
 
                       final Map<String, dynamic> data = json.decode(response.body);
+                      if(data['hasError']){
+                        // ignore: use_build_context_synchronously
+                        showSnackBarForSuccess(context, data['errors']);
+                      }
                       // ignore: use_build_context_synchronously
                       showSnackBarForSuccess(context, data['successMessage']);
                       Get.off( const MyHomePage());

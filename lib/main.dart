@@ -17,6 +17,7 @@ import 'package:get/get.dart';
 import 'Screens/MainScreen.dart';
 import 'UtilsFunctions/Utils.dart';
 import 'Widgets/Button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Widgets/TextField.dart';
 
 void main() {
@@ -154,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     "Forgot Password?",
                                     style: TextStyle(
                                         color: GlobalVariables.callToAction,
-                                        fontSize: 12,
+                                        fontSize: 21,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   onTap: () {
@@ -218,14 +219,32 @@ class _MyHomePageState extends State<MyHomePage> {
                                       isLoading = false;
                                     });
                                     print(response.body);
+                                    print(response.statusCode);
                                     if (response.statusCode == 200) {
                                       final Map<String, dynamic> data =
                                           json.decode(response.body);
                                       showSnackBarForSuccess(
                                           context, data['successMessage']);
+                                      print(response.statusCode);
+                                      SharedPreferences pref = await SharedPreferences.getInstance();
+                                       pref.setString('email', data["responseObject"]["email"]);
+                                       pref.setString('username', data["responseObject"]["firstName"]);
+                                       pref.setString('token', data["responseObject"]["token"]);
                                       Get.off(mainScreen());
                                     } else {
                                       final ress = jsonDecode(response.body);
+                                      print(ress);
+                                      print(ress['hasError']);
+                                      if(ress['hasError']){
+                                        if(ress['errors']=="Please Verify First User Account Not Verified"){
+                                          // ignore: use_build_context_synchronously
+                                          showSnackBarForSuccess(context, "Verify User Account before login");
+                                          return;
+                                        }
+                                        // ignore: use_build_context_synchronously
+                                        showSnackBarForSuccess(context, ress['errors']);
+                                        return;
+                                      }
                                       print("------------------------" + ress);
                                       showSnackBar(context, response.body);
                                     }
@@ -459,6 +478,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                           json.decode(response.body);
                                       showSnackBarForSuccess(
                                           context, data['successMessage']);
+                                      SharedPreferences pref = await SharedPreferences.getInstance();
+                                      pref.setString('email', data["responseObject"]["email"]);
+                                      pref.setString('username', data["responseObject"]["firstName"]);
+                                      pref.setString('token', data["responseObject"]["token"]);
+                                      Get.off(mainScreen());
                                       Get.off(mainScreen());
                                     } else {
                                       final ress = jsonDecode(response.body);

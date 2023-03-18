@@ -26,7 +26,11 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   Widget build(BuildContext context) {
     var deviceSize= MediaQuery.of(context).size;
-    return SafeArea(child: Scaffold(body: Container(
+    return SafeArea(child: Scaffold(
+      appBar: AppBar(leading: IconButton(icon: const Icon(Icons.arrow_back),onPressed: (){
+        Get.back();
+      }),),
+      body: Container(
       margin: EdgeInsets.only(
         top: deviceSize.height * 0.009,
       ),
@@ -36,26 +40,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: 60,
-                width: 90,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image:
-                      AssetImage("assets/images/kikundi.png"),
-                      fit: BoxFit.contain),
-                ),
-              ),
-              Text(
-                "Kikundi",
-                style: GlobalVariables
-                    .myTheme.textTheme.displayLarge,
-              ),
-            ],
-          ),
+
           SizedBox(height: deviceSize.height*0.009,),
           SizedBox(height: deviceSize.height*0.009,),
           SizedBox(height: deviceSize.height*0.009),
@@ -76,6 +61,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 hintText: " Enter email",
                 val: false,
                 labelText: 'Email',
+                autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
 
             ),
@@ -88,7 +74,11 @@ class _ResetPasswordState extends State<ResetPassword> {
               final bool isConnected =
               await InternetConnectionChecker().hasConnection;
               if (isConnected) {
-
+                if(email.text.isEmpty){
+                  // ignore: use_build_context_synchronously
+                  showSnackBarForSuccess(context, "Please enter email");
+                  return;
+                }
                 // validation
                 setState(() {
                   isLoading = true;
@@ -109,7 +99,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
                     final Map<String, dynamic> data = json.decode(response.body);
                     // ignore: use_build_context_synchronously
-                    showSnackBarForSuccess(context, data['successMessage']);
+                    showSnackBarForSuccess(context, "Email sent successfully");
                     Get.off( PasswordRenter(email: email.text,));
                   } else {
                     final Map<String, dynamic> data = json.decode(response.body);

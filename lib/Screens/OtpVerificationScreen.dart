@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../UtilsFunctions/Utils.dart';
 import '../Widgets/Button.dart';
+import '../main.dart';
 import 'MainScreen.dart';
 class OtpVerificationScreen extends StatefulWidget {
   final String email;
@@ -95,12 +96,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         isLoading = false;
                       });
                       print(response.body);
-                      if (response.statusCode == 200) {
+                      print(response.statusCode);
+                      if (response.statusCode == 202) {
 
                         final Map<String, dynamic> data = json.decode(response.body);
-                        showSnackBarForSuccess(context, data['successMessage']);
-                        Get.off(mainScreen());
+                        // ignore: use_build_context_synchronously
+                        if(data['hasError']){
+                          // ignore: use_build_context_synchronously
+                          showSnackBarForSuccess(context, "Wrong otp");
+                          return;
+                        }
+                        // ignore: use_build_context_synchronously
+                        showSnackBarForSuccess(context, "Phone number verified");
+                        Get.off(const MyHomePage());
+
                       } else {
+                        print("++++++++++++++++++++++++++++++++++++++++++++++++++++ final ress = jsonDecode(response.body);");
                         final ress = jsonDecode(response.body);
                         // ignore: use_build_context_synchronously
                         showSnackBarForSuccess(context, ress['successMessage']);

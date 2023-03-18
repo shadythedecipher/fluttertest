@@ -61,7 +61,7 @@ class GlobalVariables{
             color: blackColor
           ),
           bodySmall: GoogleFonts.poppins(
-            fontSize: 10,
+            fontSize: 18,
           )
       )
   );

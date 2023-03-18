@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final bool val;
   final bool? valueEnabled;
+  final AutovalidateMode? autovalidateMode;
   final double? width;
   final double? height;
   final IconButton? icon;
@@ -17,13 +18,14 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     this.maxLines = 1,
-    required this.val, required this.labelText, this.icon, this.width, this.height, this.valueEnabled,
+    required this.val, required this.labelText, this.icon, this.width, this.height, this.valueEnabled, this.autovalidateMode,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: autovalidateMode,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

@@ -44,6 +44,7 @@ dependencies:
   fzregex: ^2.0.0
   extended_phone_number_input: ^1.0.2
   intl_phone_number_input: ^0.7.2
+  faker: ^2.0.5
 
 dev_dependencies:
   flutter_test:
